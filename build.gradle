@@ -1,0 +1,107 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven { url "http://repo.spring.io/libs-release" }
+        maven { url "http://repo.spring.io/libs-milestone" }
+        maven { url "http://repo.spring.io/snapshot" }
+        maven { url 'http://repo.spring.io/plugins-release' }
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+        classpath("org.springframework.build.gradle:propdeps-plugin:$propdepsPluginVersion")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: 'propdeps'
+apply plugin: 'maven-publish'
+apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
+
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+    maven { url "http://repo.spring.io/libs-release" }
+    maven { url "http://repo.spring.io/libs-milestone" }
+    maven { url "http://repo.spring.io/snapshot" }
+    mavenLocal()
+}
+
+dependencies {
+    // NOTE: See https://github.com/izeye/ua-analyzer
+    compile("com.izeye.ua-analyzer:ua-analyzer-core:${uaAnalyzerVersion}")
+
+    // FIXME: Exclude this when publishing to a Maven repository.
+    provided("com.ctb.ask-anything:ask-anything-api:${askAnythingApiVersion}")
+
+    provided("org.projectlombok:lombok")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+ext {
+//    artifactVersion = '0.2.0.BUILD-SNAPSHOT'
+    artifactVersion = '0.1.0.RELEASE'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14.1'
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:unchecked'
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        core(MavenPublication) {
+            from components.java
+
+            groupId 'com.ctb.ask-anything'
+            artifactId 'ask-anything-answer-module-ua-analyzer'
+            version artifactVersion
+
+            artifact sourceJar {
+                classifier 'sources'
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username "admin"
+                password "secret123"
+            }
+
+            if (artifactVersion.endsWith("BUILD-SNAPSHOT")) {
+                url "http://localhost:8092/repository/snapshots"
+            }
+            else {
+                url "http://localhost:8092/repository/internal"
+            }
+        }
+    }
+}
+
+checkstyle {
+    toolVersion = '7.0'
+    configProperties = [
+            'headerLocation': 'config/checkstyle/checkstyle-header.txt',
+            'suppressionsLocation': 'config/checkstyle/checkstyle-suppressions.xml'
+    ]
+}
+
+jacoco {
+    toolVersion = '0.7.7.201606060606'
+}
