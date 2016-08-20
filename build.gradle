@@ -30,6 +30,10 @@ repositories {
     maven { url "http://repo.spring.io/libs-release" }
     maven { url "http://repo.spring.io/libs-milestone" }
     maven { url "http://repo.spring.io/snapshot" }
+
+    // NOTE: Use repositories for `ua-analyzer-core` and `ask-anything-api`.
+//    maven { url "http://localhost:8092/repository/internal" }
+//    maven { url "http://localhost:8092/repository/snapshots" }
     mavenLocal()
 }
 
@@ -37,6 +41,7 @@ dependencies {
     // NOTE: See https://github.com/izeye/ua-analyzer
     compile("com.izeye.ua-analyzer:ua-analyzer-core:${uaAnalyzerVersion}")
 
+    // NOTE: See https://github.com/izeye/ask-anything
     // FIXME: Exclude this when publishing to a Maven repository.
     provided("com.ctb.ask-anything:ask-anything-api:${askAnythingApiVersion}")
 
