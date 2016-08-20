@@ -46,8 +46,8 @@ dependencies {
 }
 
 ext {
-//    artifactVersion = '0.2.0.BUILD-SNAPSHOT'
-    artifactVersion = '0.1.0.RELEASE'
+    artifactVersion = '0.2.0.BUILD-SNAPSHOT'
+//    artifactVersion = '0.1.0.RELEASE'
 }
 
 task wrapper(type: Wrapper) {
