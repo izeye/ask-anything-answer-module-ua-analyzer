@@ -1,4 +1,7 @@
 # Created by .gitignore support plugin (hsz.mobi)
 
-.idea
+.idea/
 ask-anything-answer-module-ua-analyzer.iml
+
+.gradle/
+build/
